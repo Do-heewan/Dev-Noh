@@ -1,0 +1,21 @@
+---
+import { getPosts, parsePost, getPostContent } from "../../lib/notion";
+
+export async function getStaticPaths() {
+    const rawPosts = await getPosts();
+    const posts = rawPosts.map(parsePost);
+
+    return posts.map((post) => ({
+        params: { slug: post.slug },
+        props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const content = await getPostContent(post.id);
+---
+
+<article>
+    <h1>{post.title}</h1>
+    <div set:html={content} />
+</article>
