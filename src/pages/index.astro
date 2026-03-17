@@ -1,33 +1,50 @@
 ---
 import { getPosts, parsePost } from "../lib/notion";
-import Navigation from "../components/Navigation.astro";
-import Footer from "../components/Footer.astro";
+import Navigation from "../components/astro/Navigation.astro";
+import Footer from "../components/astro/Footer.astro";
+import Postgrid from "../components/astro/Postgrid.astro";
+import "../styles/global.css";
 
-const posts = (await getPosts()).map(parsePost);
+const posts = (await getPosts()).map(parsePost).slice(0, 6);
 ---
 
-<html lang='en'>
-	<head>
-		<meta charset='utf-8' />
-		<link rel='icon' type='image/svg+xml' href='/favicon.svg' />
-		<link rel='icon' href='/favicon.ico' />
-		<meta name='viewport' content='width=device-width' />
-		<meta name='generator' content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<Navigation />
-		<h1>Astro</h1>
-		<ul>
-			{
-				posts.map((post) => (
-					<li>
-						<a href={`/blog/${post.slug}`}>{post.title}</a>
-						<span>{post.date}</span>
-					</li>
-				))
-			}
-		</ul>
-		<Footer />
-	</body>
+<html lang='ko'>
+  <head>
+    <meta charset='utf-8' />
+    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+    <link rel='icon' href='/favicon.ico' />
+    <meta name='viewport' content='width=device-width' />
+    <meta name='generator' content={Astro.generator} />
+    <title>do-heewan</title>
+  </head>
+  <body class='bg-bg text-text'>
+    <Navigation />
+
+    <main class='mx-auto w-full max-w-6xl flex-1 px-6 py-12'>
+      <!-- Hero -->
+      <section class='mb-14 border-b border-border pb-10'>
+        <h1 class='mb-2 text-3xl font-bold tracking-tight'>안녕하세요 👋</h1>
+        <p class='text-muted'>개발하면서 배운 것들을 기록합니다.</p>
+      </section>
+
+      <!-- Post Grid -->
+      <section>
+        <!-- <div class='mb-5 flex items-baseline justify-between'>
+          <h2 class='text-xs font-semibold uppercase tracking-widest text-muted'>
+            Recent Posts
+          </h2>
+          <a
+            href='/blog'
+            class='text-sm text-accent transition-opacity hover:opacity-70'
+          >
+            전체 보기 →
+          </a>
+        </div> -->
+
+        <Postgrid posts={posts} />
+      </section>
+    </main>
+
+    <Footer />
+  </body>
 </html>
