@@ -33,6 +33,16 @@ export async function getPosts() {
     return response.results;
 }
 
+export async function getPageThumbnail(pageId: string): Promise<string | null> {
+    const response = await notion.blocks.children.list({ block_id: pageId, page_size: 50 });
+    for (const block of response.results as any[]) {
+        if (block.type === "image") {
+            return block.image?.file?.url ?? block.image?.external?.url ?? null;
+        }
+    }
+    return null;
+}
+
 export function parsePost(page: any) {
     const props = page.properties;
 

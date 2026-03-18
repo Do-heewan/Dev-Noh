@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { koreanTagNames } from "@/constants";
 
 interface PostCardProps {
@@ -20,11 +20,6 @@ const PostCard = ({
     title,
     updatedAt,
 }: PostCardProps) => {
-    const diffMs = useMemo(
-        () => Date.now() - new Date(createdAt.replace(/\//g, "-")).getTime(),
-        [createdAt],
-    );
-    const isNewPost = useMemo(() => Math.floor(diffMs / (1000 * 60 * 60 * 24)) <= 10, [diffMs]);
     const [isHovered, setIsHovered] = useState(false);
 
     return (
@@ -97,12 +92,6 @@ const PostCard = ({
                         {updatedAt ? `${updatedAt} (updated)` : createdAt}
                     </span>
 
-                    {/* New Tag */}
-                    {isNewPost && (
-                        <span className="text-current border-current border-[3px] rounded-[20px] px-2 py-2 text-sm font-extrabold w-fit z-[1]">
-                            NEW POST
-                        </span>
-                    )}
                 </div>
                 <h2 className="mt-2.5 text-2xl font-bold">{title}</h2>
             </div>
