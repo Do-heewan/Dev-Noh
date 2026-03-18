@@ -1,0 +1,117 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header
+  class='sticky top-0 z-10 border-b border-border bg-bg/90 backdrop-blur-sm'
+>
+  <nav class='mx-auto flex h-14 items-center justify-between px-6'>
+    <a
+      href='/'
+      class='group font-bold tracking-tight text-text font-pretendard italic'
+    >
+      <span class='relative inline-block'>
+        <!-- 너비 고정용 스페이서 (항상 레이아웃 차지) -->
+        <span class='invisible font-mono'>&lt;Heewan</span>
+        <!-- 기본 텍스트 -->
+        <span
+          class='absolute inset-0 transition-opacity duration-200 group-hover:opacity-0 whitespace-nowrap justify-center flex items-center'
+        >
+          Code
+        </span>
+        <!-- 호버 텍스트 -->
+        <span
+          class='absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100 whitespace-nowrap font-mono'
+        >
+          <span class='text-upper'>&lt;</span>Heewan<span class='text-upper'>
+            /&gt;</span
+          >
+        </span>
+      </span>
+    </a>
+
+    <div class='flex items-center gap-4'>
+      <!-- <a href='/'>Home</a> -->
+
+      <a
+        href='/blog'
+        class='font-medium text-text/80 hover:text-text transition-colors'
+      >
+        Blog
+      </a>
+
+      <button
+        id='theme-toggle'
+        aria-label='다크모드 전환'
+        class='flex items-center justify-center w-8 h-8 rounded-full text-text hover:xt-accent transition-colors'
+      >
+        <!-- Sun icon (light mode에서 표시) -->
+        <svg
+          id='icon-sun'
+          xmlns='http://www.w3.org/2000/svg'
+          width='20'
+          height='20'
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          stroke-width='2'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+          class='hidden'
+        >
+          <circle cx='12' cy='12' r='5'></circle>
+          <line x1='12' y1='1' x2='12' y2='3'></line>
+          <line x1='12' y1='21' x2='12' y2='23'></line>
+          <line x1='4.22' y1='4.22' x2='5.64' y2='5.64'></line>
+          <line x1='18.36' y1='18.36' x2='19.78' y2='19.78'></line>
+          <line x1='1' y1='12' x2='3' y2='12'></line>
+          <line x1='21' y1='12' x2='23' y2='12'></line>
+          <line x1='4.22' y1='19.78' x2='5.64' y2='18.36'></line>
+          <line x1='18.36' y1='5.64' x2='19.78' y2='4.22'></line>
+        </svg>
+        <!-- Moon icon (dark mode에서 표시) -->
+        <svg
+          id='icon-moon'
+          xmlns='http://www.w3.org/2000/svg'
+          width='20'
+          height='20'
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          stroke-width='2'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        >
+          <path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'></path>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <script is:inline>
+    (function () {
+      const saved = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      ).matches;
+      const isDark = saved ? saved === "dark" : prefersDark;
+      document.documentElement.classList.toggle("light", !isDark);
+      updateIcons(!isDark);
+
+      function updateIcons(isLight) {
+        const sun = document.getElementById("icon-sun");
+        const moon = document.getElementById("icon-moon");
+        if (!sun || !moon) return;
+        sun.classList.toggle("hidden", !isLight);
+        moon.classList.toggle("hidden", isLight);
+      }
+
+      document.getElementById("theme-toggle")?.addEventListener("click", () => {
+        const isLight = document.documentElement.classList.toggle("light");
+        localStorage.setItem("theme", isLight ? "light" : "dark");
+        te;
+        updateIcons(isLight);
+      });
+    })();
+  </script>
+</header>
