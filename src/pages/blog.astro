@@ -1,0 +1,65 @@
+---
+import { getPosts, parsePost, getPageThumbnail } from "../lib/notion";
+import Header from "../components/astro/Header.astro";
+import Footer from "../components/astro/Footer.astro";
+import Postgrid from "../components/astro/Postgrid.astro";
+import "../styles/global.css";
+
+const rawPosts = await getPosts();
+const posts = await Promise.all(
+  rawPosts.map(async (page) => {
+    const parsed = parsePost(page);
+    if (!parsed.cover) {
+      parsed.cover = await getPageThumbnail(page.id);
+    }
+    return parsed;
+  }),
+);
+---
+
+<html lang='ko'>
+  <head>
+    <meta charset='utf-8' />
+    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+    <link rel='icon' href='/favicon.ico' />
+    <meta name='viewport' content='width=device-width' />
+    <meta name='generator' content={Astro.generator} />
+    <title>do-heewan</title>
+  </head>
+  <body class='bg-bg text-text'>
+    <Header />
+
+    <main class='mx-auto w-full max-w-6xl flex-1 px-6 py-12'>
+      <!-- Hero -->
+      <section class='mb-14 border-b border-border pb-10'>
+        <h1
+          class='mb-2 text-4xl font-bold tracking-tight font-pretendard text-text italic text-center'
+        >
+          <a class='text-6xl'>C</a>ode
+          <span class='text-6xl text-upper'>{"<"}</span>
+          <span class='text-6xl'>H</span>eewan
+          <span class='text-6xl text-upper'>{"/>"}</span>
+        </h1>
+      </section>
+
+      <!-- Post Grid -->
+      <section>
+        <!-- <div class='mb-5 flex items-baseline justify-between'>
+          <h2 class='text-xs font-semibold uppercase tracking-widest text-muted'>
+            Recent Posts
+          </h2>
+          <a
+            href='/blog'
+            class='text-sm text-accent transition-opacity hover:opacity-70'
+          >
+            전체 보기 →
+          </a>
+        </div> -->
+
+        <Postgrid posts={posts} />
+      </section>
+    </main>
+
+    <Footer />
+  </body>
+</html>
