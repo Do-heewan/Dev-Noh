@@ -3,6 +3,7 @@ import { getPosts, parsePost, getPageThumbnail } from "../lib/notion";
 import Header from "../components/astro/Header.astro";
 import Footer from "../components/astro/Footer.astro";
 import Postgrid from "../components/astro/Postgrid.astro";
+import BlogTitle from "../components/astro/BlogTitle.astro";
 import "../styles/global.css";
 
 const rawPosts = await getPosts();
@@ -26,21 +27,12 @@ const posts = await Promise.all(
     <meta name='generator' content={Astro.generator} />
     <title>do-heewan</title>
   </head>
-  <body class='bg-bg text-text'>
+  <body class='bg-bg text-text flex flex-col min-h-screen'>
     <Header />
 
     <main class='mx-auto w-full max-w-6xl flex-1 px-6 py-12'>
       <!-- Hero -->
-      <section class='mb-14 border-b border-border pb-10'>
-        <h1
-          class='mb-2 text-4xl font-bold tracking-tight font-pretendard text-text italic text-center'
-        >
-          <a class='text-6xl'>C</a>ode
-          <span class='text-6xl text-upper'>{"<"}</span>
-          <span class='text-6xl'>H</span>eewan
-          <span class='text-6xl text-upper'>{"/>"}</span>
-        </h1>
-      </section>
+      <BlogTitle />
 
       <!-- Post Grid -->
       <section>
