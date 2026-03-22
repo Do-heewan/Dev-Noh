@@ -3,6 +3,22 @@ import { NotionToMarkdown } from "notion-to-md";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { property } from "astro:schema";
 import { marked } from "marked";
+import { markedHighlight } from "marked-highlight";
+import hljs from "highlight.js";
+import markedKatex from "marked-katex-extension";
+
+marked.use(
+    markedHighlight({
+        emptyLangClass: "hljs",
+        langPrefix: "hljs language-",
+        highlight(code, lang) {
+            const language = hljs.getLanguage(lang) ? lang : "plaintext";
+            return hljs.highlight(code, { language }).value;
+        },
+    })
+);
+
+marked.use(markedKatex({ throwOnError: false, nonStandard: true }));
 
 const notion = new Client({
     auth: import.meta.env.NOTION_TOKEN,
@@ -10,10 +26,30 @@ const notion = new Client({
 
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
+n2m.setCustomTransformer("image", async (block: any) => {
+    const image = block.image;
+    const url = image?.file?.url ?? image?.external?.url ?? "";
+    const captionRichText = image?.caption ?? [];
+    const caption = captionRichText.map((t: any) => t.plain_text).join("");
+
+    if (caption) {
+        return `<figure>\n<img src="${url}" alt="${caption}">\n<figcaption>${caption}</figcaption>\n</figure>`;
+    }
+    return `![](${url})`;
+});
+
+function preprocessMarkdown(md: string): string {
+    // Fix display math with surrounding spaces: "$$ formula $$" -> "$$formula$$"
+    let result = md.replace(/\$\$\s+([\s\S]+?)\s+\$\$/g, (_, inner) => `$$${inner.trim()}$$`);
+    // Fix inline math with surrounding spaces: "$ formula $" -> "$formula$"
+    result = result.replace(/(?<!\$)\$\s+([^$\n]+?)\s+\$(?!\$)/g, (_, inner) => `$${inner}$`);
+    return result;
+}
+
 export async function getPostContent(pageId: string) {
     const mdBlocks = await n2m.pageToMarkdown(pageId);
     const { parent } = n2m.toMarkdownString(mdBlocks);
-    return marked(parent);
+    return marked(preprocessMarkdown(parent));
 }
 
 export async function getPosts() {

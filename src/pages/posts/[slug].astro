@@ -26,6 +26,16 @@ const content = await getPostContent(post.id);
     <meta name='viewport' content='width=device-width' />
     <meta name='generator' content={Astro.generator} />
     <title>{post.title} — do-heewan</title>
+    <script is:inline>
+      (function () {
+        const saved = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const isDark = saved ? saved === "dark" : prefersDark;
+        document.documentElement.classList.toggle("light", !isDark);
+      })();
+    </script>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css' />
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css' />
   </head>
   <body class='min-h-screen bg-bg text-text flex flex-col antialiased'>
     <Header />
